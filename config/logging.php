@@ -86,8 +86,7 @@ return [
     'driver' => 'syslog',
     'level' => 'debug',
     'host' => env('PAPERTRAIL_URL'),
-    'port' => env('PAPERTRAIL_PORT'),
-    'formatter' => env('LOG_STDERR_FORMATTER'), // optional
+    'port'    => env('PAPERTRAIL_PORT', 12345), // Use a default port number 
 ],
 
 
