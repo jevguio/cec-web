@@ -13,8 +13,16 @@ return new class extends Migration
     {
         Schema::create('login_backlogs', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('school_id');
             $table->timestamp('login_time');
+            $table->timestamps();
+        });
+        Schema::create('room_backlogs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('school_id'); 
+            $table->string('room');
+            $table->enum('type', ['exit', 'enter']);
+            $table->timestamp('logs_time');
             $table->timestamps();
         });
     }

@@ -12,7 +12,8 @@
     AddType application/octet-stream .data.gz
     AddType text/css .css.gz
 
+    Header set Access-Control-Allow-Origin "*"
     <FilesMatch "\.gz$">
         Header set Content-Encoding gzip
     </FilesMatch>
-</IfModule>
+</IfModule> 

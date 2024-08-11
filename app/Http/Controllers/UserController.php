@@ -11,12 +11,17 @@ class UserController extends Controller
     {
         $request->validate([
             'school_id' => 'required|unique:users',
+            'fname' => 'required',
+            'mname' => 'required',
+            'lname' => 'required',
             'type' => 'required|in:teacher,student',
             'password' => 'required',
         ]);
 
         $user = User::create([
-            'name' => 'a',
+            'fname' =>  $request->fname,
+            'mname' =>  $request->mname,
+            'lname' =>  $request->lname,
             'school_id' => $request->school_id,
             'type' => $request->type,
             'password' => Hash::make($request->password),

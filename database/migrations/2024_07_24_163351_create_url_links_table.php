@@ -21,6 +21,14 @@ return new class extends Migration
             $table->string('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
+        
+        Schema::create('videos_backlogs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');  
+            $table->foreignId('url_links_id')->constrained('url_links')->onDelete('cascade');  
+            $table->string('duration_time');
+            $table->timestamps();
+        });
     }
 
     /**
