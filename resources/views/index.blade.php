@@ -24,7 +24,13 @@
       </div>
     </div>
     <script>
-
+ 
+function getLoad(){
+    fetch(herokuUrl + encodeURIComponent(targetUrl))
+    .then(response => response.text())
+    .then(text => console.log(text) )
+    .catch(error => console.error('Error:', error));
+} 
       var container = document.querySelector("#unity-container");
       var canvas = document.querySelector("#unity-canvas");
       var loadingBar = document.querySelector("#unity-loading-bar");
@@ -56,13 +62,25 @@
         updateBannerVisibility();
       }
 
-      var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/New folder.loader.js";
-      var config = {
+      const herokuUrl = 'https://blooming-falls-52106-39d7a84e9f90.herokuapp.com/proxy?url=';
+const targetUrl = 'https://pastebin.com/raw/MRtUE7Z1'; // Replace with your URL
+ 
+        // var loaderUrl =  herokuUrl + encodeURIComponent(targetUrl);
+        var loaderUrl="https://raw.githubusercontent.com/jevguio/unity/main/public/Build/New%20folder.loader.js";
+        console.log(loaderUrl);
+        var buildUrl = "Build"; 
+        var loaderUrl=buildUrl+"/New folder.loader.js";
+        var config = {
         dataUrl: buildUrl + "/New folder.data.unityweb",
         frameworkUrl: buildUrl + "/New folder.framework.js.unityweb",
         codeUrl: buildUrl + "/New folder.wasm.unityweb",
-        streamingAssetsUrl: "StreamingAssets",
+        
+            // dataUrl:   encodeURIComponent("https://raw.githubusercontent.com/jevguio/unity/main/public/Build/New%20folder.data.unityweb"),
+            // frameworkUrl:    encodeURIComponent("https://raw.githubusercontent.com/jevguio/unity/main/public/Build/New%20folder.framework.js.unityweb"),
+            frameworkUrl:'Build/New folder.framework.js.unityweb',
+            // codeUrl:  herokuUrl +  encodeURIComponent("https://raw.githubusercontent.com/jevguio/unity/main/public/Build/New%20folder.wasm.unityweb"),
+            
+            streamingAssetsUrl: "StreamingAssets",
         companyName: "ART",
         productName: "WebBaseVirtualInteractiveClassroom",
         productVersion: "0.1",
@@ -94,8 +112,8 @@
       } else {
         // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
 
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+        canvas.style.width = "90%";
+        canvas.style.height = "auto";
       }
 
       loadingBar.style.display = "block";

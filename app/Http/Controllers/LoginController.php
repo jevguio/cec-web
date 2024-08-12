@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\LoginBacklog;
 class LoginController extends Controller
 { 
     public function login(Request $request)
@@ -17,7 +18,10 @@ class LoginController extends Controller
 
         // Find the user by school_id
         $user = User::where('school_id', $request->school_id)->first();
-
+         LoginBacklog::create([
+            'school_id' =>  $request->school_id, 
+            'login_time' =>  now(), 
+        ]);
         if (!$user || !Hash::check($request->password, $user->password)) {
             return response()->json([
                 'message' => 'Invalid credentials'
@@ -34,6 +38,9 @@ class LoginController extends Controller
             'message' => 'Login successful',
             'user' => [
                 'id' => $user->id,
+                'fname' => $user->fname,
+                'mname' => $user->mname,
+                'lname' => $user->lname,
                 'school_id' => $user->school_id,
                 'type' => $user->type,
             ],

@@ -8,4 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class LoginBacklog extends Model
 {
     use HasFactory;
+    protected $fillable = ['school_id','login_time']; 
 }
