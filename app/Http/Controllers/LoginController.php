@@ -9,6 +9,41 @@ use App\Models\User;
 use App\Models\LoginBacklog;
 class LoginController extends Controller
 { 
+    public function loginTeacherView(){
+         return view("Teacher.Login");
+    }
+    public function dashboard(){
+
+        if(Auth::user()){
+
+            return view("Teacher.Dashboard");
+        }else{
+            
+         return view("Teacher.Login");
+        }
+    }
+    
+    public function loginTeacher(Request $request)
+    {
+        $credentials = $request->validate([
+            'school_id' => ['required'], // Validate school_id instead of email
+            'psw' => ['required'],
+        ]);
+
+        // Attempt authentication using school_id and password
+        if (Auth::attempt(['school_id' => $credentials['school_id'], 'password' => $credentials['psw']])) {
+            $request->session()->regenerate(); // Prevent session fixation attacks
+
+            // Redirect to dashboard with user data
+            return redirect()->route('dashboard')->with('user', Auth::user());
+        }
+
+        // Authentication failed
+        return back()->withErrors([
+    'school_id' => 'The provided school ID or password is incorrect.',
+    ])->withInput(); // `withInput()` preserves the old input data
+    
+    }
     public function login(Request $request)
     {
         $request->validate([

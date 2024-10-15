@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "682224543424",
+    "firebase_url": "https://cec-game-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cec-game",
+    "storage_bucket": "cec-game.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:682224543424:android:03655ba25a288013756f25",
+        "android_client_info": {
+          "package_name": "com.ART.WebBaseVirtualInteractiveClassroom"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDahdAIsOhwyXzStuspo54IAL3nXo0YbBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

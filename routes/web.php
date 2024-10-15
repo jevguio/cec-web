@@ -9,7 +9,10 @@ use App\Http\Controllers\LoginController;
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);
 });
-Route::post('/login', [LoginController::class, 'login']);
+Route::post('/loginTeacher', [LoginController::class, 'loginTeacher']);
+Route::get('/dashboard', [LoginController::class, 'dashboard'])->name('dashboard');
+Route::post('/login', [LoginController::class, 'login'])->name('login');
+Route::get('/faculty/login', [LoginController::class, 'loginTeacherView']);
 Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware('auth')->group(function () {
