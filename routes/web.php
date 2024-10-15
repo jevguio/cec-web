@@ -17,6 +17,7 @@ Route::post('/loginTeacher', [LoginController::class, 'loginTeacher']);
 Route::get('/dashboard', [LoginController::class, 'dashboard'])->name('dashboard');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/faculty/login', [LoginController::class, 'loginTeacherView']);
+Route::get('/faculty/register', [LoginController::class, 'loginTeacherView']);
 Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware('auth')->group(function () {

@@ -14,7 +14,7 @@ class LoginController extends Controller
     }
     public function dashboard(){
 
-        if(Auth::user()){
+        if(!Auth::user()){
 
             return view("Teacher.Dashboard");
         }else{

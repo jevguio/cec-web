@@ -30,24 +30,29 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    filesSelected.forEach(file => {
-      formData.append('files[]', file); // Append each file to the FormData
+    const formData = new FormData(e.target);
+    Array.from(formData.entries()).forEach(([key, value]) => {
+      console.log(`${key}:`, value);
     });
-    formData.append('announcement', newContent);
-
     try {
-      const response = await axios.post('/api/upload', formData, {
+
+
+      const response = await axios.post('http://127.0.0.1:8000/api/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
-          
         },
       });
-      console.log(response.data); // Handle response
+      console.log('Upload Successful:', response.data);
     } catch (error) {
-      console.error(error); // Handle error
+      if (error.response && error.response.status === 422) {
+        // Log validation errors
+        console.error('Validation Errors:', error.response.data.errors);
+      } else {
+        console.error('Upload Failed:', error);
+      }
     }
   };
+
   return (
     <>
       <div>
@@ -59,9 +64,10 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
         ))}
       </div>
 
-      <div>
+      <form onSubmit={handleSubmit} method="post" action="./api/upload">
         <textarea
           type="text"
+          name="announcement"
           className="upload_text"
           style={{
             width: '92%',
@@ -104,16 +110,17 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
 
         <input
           type="file"
-          name="videoUpload"
+          name="files[]"
           aria-label=""
           onChange={handleFileSelection}
           multiple
           ref={fileInput}
           hidden
+          accept="image/png,image/jpg,video/mp4"
         />
 
         <button
-          onClick={handleSubmit}
+          type="submit"
           style={{
             marginTop: 10,
             borderRadius: 5
@@ -121,7 +128,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
         >
           Add Post
         </button>
-      </div>
+      </form>
     </>
   );
 };

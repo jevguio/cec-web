@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
-            $table->string('file_path'); // To store the path to the uploaded file
             $table->text('content'); // For the announcement content
             $table->timestamps();
         });
+        
+        
     }
 
     /**
