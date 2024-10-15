@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import FileImageView from './fileImageView';
 
-const RecordUploads = ({ post, newContent, setNewContent, handleAddPost,filesSelected,setSelectedFiles}) => {
+const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSelected, setSelectedFiles }) => {
   const fileInput = useRef(null);
   const [hoverAttach, setHoverAttach] = useState(false);
 
@@ -27,7 +27,27 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost,filesSel
       prevFiles.filter((file, index) => index !== indexToRemove)
     );
   };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const formData = new FormData();
+    filesSelected.forEach(file => {
+      formData.append('files[]', file); // Append each file to the FormData
+    });
+    formData.append('announcement', newContent);
+
+    try {
+      const response = await axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          
+        },
+      });
+      console.log(response.data); // Handle response
+    } catch (error) {
+      console.error(error); // Handle error
+    }
+  };
   return (
     <>
       <div>
@@ -40,7 +60,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost,filesSel
       </div>
 
       <div>
-        <input
+        <textarea
           type="text"
           className="upload_text"
           style={{
@@ -57,7 +77,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost,filesSel
 
         <div
           style={{
-            border: hoverAttach ? 'dashed 3px white' : 'dashed 2px gray',
+            border: hoverAttach ? 'dashed 2px white' : 'dashed 2px gray',
             padding: 10,
             textAlign: 'center',
             cursor: 'pointer',
@@ -93,7 +113,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost,filesSel
         />
 
         <button
-          onClick={handleAddPost}
+          onClick={handleSubmit}
           style={{
             marginTop: 10,
             borderRadius: 5

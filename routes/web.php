@@ -6,6 +6,10 @@ use App\Http\Controllers\LinkController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubjectController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\FileUploadController;
+
+Route::post('/api/upload', [FileUploadController::class, 'upload']);
+
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);
 });
