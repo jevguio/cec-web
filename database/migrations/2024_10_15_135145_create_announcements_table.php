@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users'); // Foreign key to announcements
             $table->text('content'); // For the announcement content
             $table->timestamps();
         });

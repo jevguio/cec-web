@@ -39,11 +39,6 @@ button:hover {
   padding: 10px 18px;
   background-color: #f44336;
 }
-.registerbtn {
-  width: auto;
-  padding: 10px 18px;
-  background-color: #3678f4;
-}
 
 /* Center the image and position the close button */
 .imgcontainer {
@@ -53,7 +48,7 @@ button:hover {
 }
 
 img.avatar {
-  width: 40%;
+  width: 30%;
   border-radius: 50%;
 }
 
@@ -135,35 +130,68 @@ span.psw {
 
 <div id="id01" class="modal">
   
-  <form class="modal-content animate" action="/loginTeacher" method="post">
+  <form class="modal-content animate" action="{{ route('register') }}" method="post">
   @csrf
     <div class="imgcontainer"> 
       <img src="https://www.w3schools.com/howto/img_avatar2.png" alt="Avatar" class="avatar">
     </div>
 
     <div class="container">
+  <h2>
+    Register
+  </h2>
+  @if (session()->has('success'))
+  <span class="text-sm" style="color:rgb(0, 156, 34);">
+      {{ session()->get('success') }}
+  </span><br>
+@endif
 
-      <h2>
-        Register
-      </h2>
-    @if ($errors->has('school_id'))
-    <span class="text-red-500 text-sm" style="color:red;">{{ $errors->first('school_id') }}</span><br>
-    @endif
+  @if ($errors->has('school_id'))
+  <span class="text-red-500 text-sm" style="color:red;">{{ $errors->first('school_id') }}</span><br>
+  @endif
+      <label for="fname"><b>First Name:</b></label>
+      <input type="text" placeholder="Enter First Name" name="fname" required>
+      @error('fname')
+          <span class="text-red-500 text-sm">{{ $message }}</span>
+      @enderror
+      <label for="mname"><b>Middle  Name:</b></label>
+      <input type="text" placeholder="Enter Middle Name" name="mname" required>
+      @error('mname')
+          <span class="text-red-500 text-sm">{{ $message }}</span>
+      @enderror
+      <label for="lname"><b>Last  Name:</b></label>
+      <input type="text" placeholder="Enter Last Name" name="lname" required>
+      @error('lname')
+          <span class="text-red-500 text-sm">{{ $message }}</span>
+      @enderror
       <label for="school_id"><b>School ID:</b></label>
       <input type="text" placeholder="Enter School ID" name="school_id" required>
+      @error('school_id')
+          <span class="text-red-500 text-sm">{{ $message }}</span>
+      @enderror
 
-      <label for="password"><b>Password:</b></label>
+      <div>
+        <label for="type"><b>Account Type:</b></label>
+        <select name="type" required>
+            <option value="teacher">Teacher</option>
+            <option value="student">Student</option>
+        </select>
+    </div>
+    <br>
+      <label for="psw"><b>Password:</b></label>
       <input type="password" placeholder="Enter Password" name="password" required>
+      @error('password')
+          <span class="text-red-500 text-sm">{{ $message }}</span>
+      @enderror
         
-      <button type="submit">Login</button>
+      <button type="submit">Register</button>
       <label>
         <input type="checkbox" checked="checked" name="remember"> Remember me
-      </label>
+      </label>  
     </div>
 
     <div class="container" style="background-color:#f1f1f1">
-      <button type="button" onclick="window.location.href = '/'" class="cancelbtn">Cancel</button>
-      <button type="button" onclick="window.location.href = '/faculty/register'" class="registerbtn">Register</button>
+      <button type="button" onclick="window.location.href = '/faculty/login'" class="cancelbtn">Cancel</button> 
       <span class="psw">Forgot <a href="#">password?</a></span>
     </div>
   </form>

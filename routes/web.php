@@ -9,15 +9,17 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\FileUploadController;
 
 Route::post('/api/upload', [FileUploadController::class, 'upload']);
+Route::post('/api/getupload', [FileUploadController::class, 'viewFiles']);
 
 Route::get('/csrf-token', function () {
     return response()->json(['csrf_token' => csrf_token()]);
 });
-Route::post('/loginTeacher', [LoginController::class, 'loginTeacher']);
+Route::post('/register/user', [UserController::class, 'registerForWeb'])->name('register');
+Route::post('/loginTeacher', [LoginController::class, 'loginTeacher'])->name('teacher.login');
 Route::get('/dashboard', [LoginController::class, 'dashboard'])->name('dashboard');
 Route::post('/login', [LoginController::class, 'login'])->name('login');
 Route::get('/faculty/login', [LoginController::class, 'loginTeacherView']);
-Route::get('/faculty/register', [LoginController::class, 'loginTeacherView']);
+Route::get('/faculty/register', [LoginController::class, 'registerTeacherView']);
 Route::post('/register', [UserController::class, 'register']);
 
 Route::middleware('auth')->group(function () {

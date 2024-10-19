@@ -12,9 +12,12 @@ class LoginController extends Controller
     public function loginTeacherView(){
          return view("Teacher.Login");
     }
+    public function registerTeacherView(){
+         return view("Teacher.Register");
+    }
     public function dashboard(){
 
-        if(!Auth::user()){
+        if(Auth::user()){
 
             return view("Teacher.Dashboard");
         }else{
@@ -27,11 +30,11 @@ class LoginController extends Controller
     {
         $credentials = $request->validate([
             'school_id' => ['required'], // Validate school_id instead of email
-            'psw' => ['required'],
+            'password' => ['required'],
         ]);
 
         // Attempt authentication using school_id and password
-        if (Auth::attempt(['school_id' => $credentials['school_id'], 'password' => $credentials['psw']])) {
+        if (Auth::attempt(['school_id' => $credentials['school_id'], 'password' => $credentials['password']])) {
             $request->session()->regenerate(); // Prevent session fixation attacks
 
             // Redirect to dashboard with user data

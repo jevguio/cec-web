@@ -36,4 +36,29 @@ class UserController extends Controller
             ],
         ]);
     }
+    public function registerForWeb(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'fname' => 'required|string|max:255',
+            'mname' => 'required|string|max:255',
+            'lname' => 'required|string|max:255',
+            'school_id' => 'required|string|max:255|unique:users',
+            'password' => 'required|string|min:8',
+            'type' => 'required|in:teacher,student',
+        ]);
+
+        // Create the user
+        $user = User::create([
+            'fname' => $request->fname,
+            'mname' => $request->mname,
+            'lname' => $request->lname,
+            'school_id' => $request->school_id,
+            'password' => Hash::make($request->password),
+            'type' => $request->type,
+        ]);
+
+        // Log in the user or redirect to a page
+        return redirect()->route('register')->with('success', 'Registration successful!.');
+    }
 }

@@ -13,6 +13,7 @@ class ImagesUpload extends Model
 
     public function announcement()
     {
-        return $this->belongsTo(Announcement::class); // Define relationship to Announcement
-    }
+        return $this->belongsTo(Announcement::class, 'announcement_id');
+    } 
+    
 }

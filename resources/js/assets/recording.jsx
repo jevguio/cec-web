@@ -137,7 +137,7 @@ const Recorder = ({setFileCurrent, handleAddPost}) => {
   };
 
   return (
-    <div className="recorder-container">
+    <div className="recorder-container" style={{padding:15}}>
       <div>
         <label>Select Camera:</label>
         <select
@@ -151,15 +151,16 @@ const Recorder = ({setFileCurrent, handleAddPost}) => {
           ))}
         </select>
       </div>
-      <div className="video-container">
-        <video ref={videoRef} autoPlay muted className="screen-video" />
+      <div className="video-container" style={{height:'78vh' ,aspectRatio:'16/9'}}>
+        <video ref={videoRef} autoPlay muted className="screen-video" style={{width:'100%',aspectRatio:'16/9'}}/>
         <video ref={cameraRef} autoPlay muted onLoadedMetadata={handleEnterPip} className="camera-video" />
       </div>
       <br />
       <button onClick={!screenPermissionGranted ? handleOpenScreenRecord : handleCloseScreenRecord}>
         {screenPermissionGranted ? 'Stop Share Screen' : 'Start Share Screen'}
       </button>
-      {screenPermissionGranted && <button style={{ backgroundColor: recording ? 'red' : '' }} onClick={recording ? handleStopRecording : handleStartRecording}>
+      {screenPermissionGranted && 
+      <button style={{ backgroundColor: recording ? 'red' : '' }} onClick={recording ? handleStopRecording : handleStartRecording}>
         {recording ? 'Stop Recording' : 'Start Recording'}
       </button>}
 

@@ -85,71 +85,13 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
   return (
     <div style={{
       padding: 5,
-      width: '98%',
-      display:'flex',margin:5
+      width: '100%',
+      display:'flex'
     }}>
-      <div style={{
-        height: '70vh',
-        overflow: 'auto',
-        width:'99%',
-        padding:10,
-        borderRadius:10,
-        backgroundColor:'gray'
-        ,margin:5
-      }}>
-        {announcement && announcement.map((item, index) => (
-          <div key={index} style={{
-            border:'solid 1px',
-            padding:15, 
-            margin:5,
-            backgroundColor:'lightgray'
-          }}>
-            <p>Content: {item.content}</p>
-            <div style={{display:'flex', flexWrap: 'wrap'}}>
-              {item.files.map((file, index) => {
-                // Function to get the file extension
-                const getFileExtension = (filePath) => {
-                  return filePath.split('.').pop().toLowerCase();
-                };
-
-                const fileExtension = getFileExtension(file.file_path);
-                const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension);
-                const isVideo = ['mp4', 'mov', 'webm'].includes(fileExtension);
-
-                return (
-                  <div key={index}>
-                    {isImage && (
-                      <img
-                        src={'/storage/' + file.file_path}
-                        alt={`Uploaded content ${index}`}
-                        style={{ maxHeight: '60px',width:'95%' }}
-                      />
-                    )}
-
-                    {isVideo && (
-                      <video controls style={{ maxHeight: '60px' }}>
-                        <source src={'/storage/' + file.file_path} type={`video/${fileExtension}`} />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-
-                    {!isImage && !isVideo && (
-                      <p>Unsupported file type for display.</p>
-                    )}
-                  </div>
-                );
-              })}
-
-            </div>
-            <button onClick={() => onClickeditHandle(item.id, item.content, item.files)}>Edit</button>
-          </div>
-        ))}
-      </div>
 
       <form style={{
-        margin: 10,
-        padding: 10,
-        width: '98%'
+        margin: 'auto',
+        width: '100%'
       }} onSubmit={handleSubmit} method="post" action="/api/upload">
         <textarea
           type="text"
@@ -237,6 +179,63 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
           Cancel
         </button>}
       </form>
+      
+      <div style={{
+        height: '70vh',
+        overflow: 'auto',
+        width:'70%',
+        padding:15,
+        borderRadius:10,
+        backgroundColor:'gray'
+      }}>
+        {announcement && announcement.map((item, index) => (
+          <div key={index} style={{
+            border:'solid 1px',
+            padding:15, 
+            margin:5,
+            backgroundColor:'lightgray'
+          }}>
+            <p>Content: {item.content}</p>
+            <div style={{display:'flex', flexWrap: 'wrap'}}>
+              {item.files.map((file, index) => {
+                // Function to get the file extension
+                const getFileExtension = (filePath) => {
+                  return filePath.split('.').pop().toLowerCase();
+                };
+
+                const fileExtension = getFileExtension(file.file_path);
+                const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension);
+                const isVideo = ['mp4', 'mov', 'webm'].includes(fileExtension);
+
+                return (
+                  <div key={index}>
+                    {isImage && (
+                      <img
+                        src={'/storage/' + file.file_path}
+                        alt={`Uploaded content ${index}`}
+                        style={{ maxHeight: '60px',width:'95%' }}
+                      />
+                    )}
+
+                    {isVideo && (
+                      <video controls style={{ maxHeight: '60px' }}>
+                        <source src={'/storage/' + file.file_path} type={`video/${fileExtension}`} />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+
+                    {!isImage && !isVideo && (
+                      <p>Unsupported file type for display.</p>
+                    )}
+                  </div>
+                );
+              })}
+
+            </div>
+            <button onClick={() => onClickeditHandle(item.id, item.content, item.files)}>Edit</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

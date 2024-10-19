@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use App\Models\ImagesUpload; 
+use App\Models\User;
 use App\Models\Announcement; // Assuming you have an Announcement model
 
 class FileUploadController extends Controller
@@ -18,37 +20,72 @@ class FileUploadController extends Controller
             'announcement' => 'required|string|max:255',
         ]);
         
+        $announcement = new Announcement();
         // Initialize an array to hold paths 
         // Initialize an array to hold paths 
-if ($request->hasFile('files')) {
-    $allowedFileExtensions = ['jpeg', 'jpg', 'png', 'mp4'];
-    $files = $request->file('files');
-    
-    // Create the announcement
-    $announcement = new Announcement();
-    $announcement->content = $request->announcement; // Store the content
- 
-    $announcement->save();
-    $filePaths = []; // Array to hold file paths
-    foreach ($files as $file) {
-        $filename = $file->getClientOriginalName();
-        $extension = $file->getClientOriginalExtension();
-        $check = in_array($extension, $allowedFileExtensions);
-        
-        if ($check) {
-            $filePath =  $file->store('files'); // Store file and get the path
-            $filePaths[] = $filePath; // Add path to array
 
-            // Create a new file entry in the database
-            ImagesUpload::create(['announcement_id' => $announcement->id, 'file_path' => $filePath]);
+
+        if( $request->has('announcementID')){
+            $announcement = Announcement::find($request->announcementID);
         }
-    }
+        if ($request->has('fileUrl')) {
+            $fileUrls = json_decode($request->input('fileUrl'), true);
+            \Log::info('File URLs:', $fileUrls);
+            $announcement->files()->delete(); // Optional: Remove old files if you want to replace them 
+        
+            // Extract IDs from the file URLs for sync
+            $fileIds = array_column($fileUrls, 'id');
+         
+        
+            // Now, loop through the file URLs and save them to the database
+            foreach ($fileUrls as $fileUrl) {
+                $announcement->files()->create(['file_path' => $fileUrl['file_path']]); // Create new file entries
+            }
+        }
+        
+        $announcement->content = $request->announcement; // Store the content
+        $user_id = Auth::user()->id;
+        $announcement->user_id = $user_id; // Store the user_id
+        
+        $announcement->save();
+        if ($request->hasFile('files')) {
+            $allowedFileExtensions = ['jpeg', 'jpg', 'png', 'mp4'];
+            $files = $request->file('files');
+            
+            // Create the announcement
+           
+            $filePaths = []; // Array to hold file paths
+            foreach ($files as $file) {
+                $filename = $file->getClientOriginalName();
+                $extension = $file->getClientOriginalExtension();
+                $check = in_array($extension, $allowedFileExtensions);
+                
+                if ($check) {
+                    $filePath =  $file->store('uploads', 'public'); // Store file and get the path
+                    $filePaths[] = $filePath; // Add path to array
 
-    echo "Upload Successfully";
-}
+                    // Create a new file entry in the database
+                    ImagesUpload::create(['announcement_id' => $announcement->id, 'file_path' => $filePath]);
+                }
+            } 
+        }
 
         // Now you can save the announcement and file paths to your database
         // Assuming you have an Announcement model
         return response()->json(['message' => 'File uploaded successfully!', 'announcement' => $announcement], 201);
     }
+    public function viewFiles()
+    {
+        // Find the announcement with its associated files
+    $user_id = Auth::user()->id;
+    $announcements = Announcement::with('files')->where('user_id', $user_id)->get();
+     
+    
+        // Return the JSON response with announcement content and file URLs
+        return response()->json([
+            'announcements' => $announcements, 
+        ]);
+    }
+    
+    
 }

@@ -1,8 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-function FileImageView({ file, removeFile, index }) {
+function FileImageView({ file, removeFile, index, url }) { 
+    let isImage='';
+    let isVideo='';
+const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+const videoExtensions = ['mp4', 'mov', 'webm'];
 
-  const isVideo = file.type.startsWith('video/'); // Check if the file is a video
+// Function to extract file extension
+const getFileExtension = (url) => {
+    // Check if url is a string
+    if (typeof url === 'string') {
+        const parts = url.split('.');
+        return parts.length > 1 ? parts.pop().toLowerCase() : '';
+    }
+    console.warn('Invalid URL:', url);
+    return ''; // Return an empty string if not a valid URL
+};
+const fileExtension = url?getFileExtension(url):''; 
+ isImage =  url?imageExtensions.includes(fileExtension):'';
+ isVideo = url?videoExtensions.includes(fileExtension):file.type.startsWith('video/'); 
     return (
         <>
             <div style={{
@@ -16,9 +32,9 @@ function FileImageView({ file, removeFile, index }) {
             }}>
                 {isVideo ? (
                     <video
-                        src={URL.createObjectURL(file)}
+                        src={url? 'storage/'+url : URL.createObjectURL(file)}
                         disablePictureInPicture
-                        
+
                         muted
                         style={{
                             width: '100%',
@@ -31,8 +47,8 @@ function FileImageView({ file, removeFile, index }) {
                     />
                 ) : (
                     <img
-                        src={URL.createObjectURL(file)}
-                        alt={file.name}
+                        src={url? 'storage/'+url : URL.createObjectURL(file)}
+                        alt={url?'storage/'+url:file.name}
                         style={{
                             width: '100%',
                             height: 'auto',
@@ -45,9 +61,9 @@ function FileImageView({ file, removeFile, index }) {
                 )}
                 <div>
 
-                    <label style={{ padding: 10, fontSize: '12px' }}>{file.name}</label><br></br>
+                    <label style={{ padding: 10, fontSize: '12px' }}>{url?isVideo?'video '+(index+1):'image '+(index+1):file.name}</label><br></br>
 
-                    <button style={{
+                    <button type='button' style={{
                         position: 'absolute',
                         right: 35,
                         height: '20px', fontSize: '10px',
