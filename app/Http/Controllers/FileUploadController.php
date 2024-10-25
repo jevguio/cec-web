@@ -11,12 +11,25 @@ use App\Models\Announcement; // Assuming you have an Announcement model
 
 class FileUploadController extends Controller
 {
+    public function viewFileDocs($filename)
+    {
+
+        $path = 'videos/' . basename($filename); // Adjust the path according to your storage structure
+
+        if (Storage::disk('public')->exists($path)) {
+             return response()->file($path, [
+        'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    ]); 
+        }
+
+        return response()->json(['error' => 'File not found'], 404);
+    }
     public function upload(Request $request)
     { 
 
         // Validate the request
         $request->validate([
-            'files.*' => 'required', // 20 MB max
+            'files.*' => 'required',  
             'announcement' => 'required|string|max:255',
         ]);
         
@@ -28,10 +41,17 @@ class FileUploadController extends Controller
         if( $request->has('announcementID')){
             $announcement = Announcement::find($request->announcementID);
         }
+        if (!$announcement) {
+            // If still no announcement found (neither newly created nor fetched), return an error
+            $announcement = new Announcement(); // For creating a new announcement instead of update
+        }
         if ($request->has('fileUrl')) {
             $fileUrls = json_decode($request->input('fileUrl'), true);
             \Log::info('File URLs:', $fileUrls);
-            $announcement->files()->delete(); // Optional: Remove old files if you want to replace them 
+            if($announcement->files()->exists()){
+                $announcement->files()->delete(); // Optional: Remove old files if you want to replace them 
+
+            }
         
             // Extract IDs from the file URLs for sync
             $fileIds = array_column($fileUrls, 'id');

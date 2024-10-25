@@ -1,18 +1,25 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ART3RemovebgPreview1 from "./assets/img-art-3-removebg-preview-1.png";
 import arrowDropDown from "./assets/img-arrow-drop-down.svg";
 import calendarRemovebgPreview1 from "./assets/img-calendar-removebg-preview-1.png";
 import notifRemovebgPreview1 from "./assets/img-notif-removebg-preview-1.png";
 import playRemovebgPreview1 from "./assets/img-play-removebg-preview-1.png";
+import register from "./assets/register.png";
+import subject from "./assets/subject.png";
 import "./assets/style.css";
 import upload from "./assets/img-upload.svg";
 import Recorder from './assets/recording';
-import Upload from './components/RecordUploads';
+import UploadVideo from './components/RecordUploadsVideo';
 import AnnouncementView from './components/announcementView';
 import CalendarView from './components/CalendarView';
-export const Main = () => {
+import SubjectCreate from './components/SubjectCreate';
+import SubjectView from './components/SubjectView';
+import RegisterForm from './RegisterForm';
 
-  const [filesSelected, setSelectedFiles] = useState([]);
+export const Main = () => {
+  const [authAdmin, setAuthAdmin] = useState(false);
+  const [filesSelected_Activity, setSelectedFiles_Activity] = useState([]);
+  const [filesSelected_Announcement, setSelectedFiles_Announcement] = useState([]);
   const editorRef = useRef(null);
   const [tab, setTab] = useState(0);
   const [opt, setOpt] = useState(0);
@@ -23,6 +30,37 @@ export const Main = () => {
   const [post, setPost] = useState([]);
   const [newContent, setNewContent] = useState('');
 
+  const [formData, setFormData] = useState({
+    id: 0,
+    title: '',
+    room: '',
+    teacher_id: '',
+  });
+  useEffect(() => {
+    handleSubmit();
+  }, [])
+  const handleSubmit = async () => {
+
+    try {
+      const response = await fetch('/get/auth', {
+        method: 'Get',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+        },
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setAuthAdmin(result.auth.type);
+      } else {
+        console.error(result.message || 'An error occurred.');
+      }
+    } catch (error) {
+      console.error(error + 'An error occurred. Please try again.');
+    }
+  };
   const handleAddPost = () => {
     // Create a new post
     const newPost = {
@@ -132,64 +170,95 @@ export const Main = () => {
             <button onClick={(e) => OnclickTab(2)} className={tab == 2 ? 'leftButton p1 active' : "leftButton p1"}>
               <img src={calendarRemovebgPreview1} ></img>
             </button>
+            <button onClick={(e) => OnclickTab(3)} className={tab == 3 ? 'leftButton p1 active' : "leftButton p1"}>
+              <img style={{
+                padding: '10px',
+              }} src={register} ></img>
+            </button>
+            {authAdmin === "admin" &&
+              <button onClick={(e) => OnclickTab(4)} className={tab == 4 ? 'leftButton p1 active' : "leftButton p1"}>
+                <img src={subject} ></img>
+              </button>}
           </div>
-          {tab == 0 ? <>
-            <div style={{
-              width: '100%',
-            }}>
+          <div style={{
+            maxHeight: '95vh',
+            width: '100%',
+          }}>
+            {tab == 0 ? <>
               <div style={{
-                padding: 5,
-                margin: 15,
-                fontSize: 'x-large',
-                fontWeight: 'bold',
-              }}>ClassWork</div>
-              <select onChange={(e) => setOpt(e.target.value)} className="SelectActivity"
-                style={{
-                  padding: 5,
-                  marginLeft: 15,
-                  borderRadius: 10,
-                  fontSize: 'large',
-                }} >
-                <option value="Announcement">Announcement</option>
-                <option value="Activity">Activity</option>
-                <option value="Reminder">Reminder</option>
-              </select>
-              <AnnouncementView fileCurrent={fileCurrent} setSelectedFiles={setSelectedFiles} filesSelected={filesSelected} post={post} handleAddPost={handleAddPost} newContent={newContent} setNewContent={setNewContent}></AnnouncementView>
-               
-            </div>
-          </>
-            : tab == 1 ? <>
-              <div style={{
-                display:'flex',
-              width: '100%',
-              height: '90vh',
+                width: '98%',
               }}>
-
                 <div style={{
-                  backgroundColor:'#d5d5d5',
-                  width:'38%',
-                  margin:10,
-                  marginBottom:35,
-                }}>
-                  <Recorder setFileCurrent={setFileCurrent} handleAddPost={handleAddPost}></Recorder>
-                </div>
-                <div  style={{
-                  backgroundColor:'#d5d5d5',
-                  width:'54.5%', 
-                  marginRight:10,
-                  marginTop:10,
-                  marginBottom:10,
+                  padding: 5,
+                  margin: 15,
+                  fontSize: 'x-large',
+                  fontWeight: 'bold',
+                }}>Announcement</div>
+                <AnnouncementView fileCurrent={fileCurrent} setSelectedFiles={setSelectedFiles_Announcement} filesSelected={filesSelected_Announcement} post={post} handleAddPost={handleAddPost} newContent={newContent} setNewContent={setNewContent}></AnnouncementView>
 
-                }}>
-                  <h2 style={{textAlign:'center'}}>Uploads:  </h2>
-                  <Upload fileCurrent={fileCurrent} setSelectedFiles={setSelectedFiles} filesSelected={filesSelected} post={post} handleAddPost={handleAddPost} newContent={newContent} setNewContent={setNewContent}></Upload>
-                </div>
               </div>
-            </> : <>
-            <CalendarView></CalendarView>
             </>
+              : tab == 1 ? <>
+                <div style={{
+                  display: 'flex',
+                  width: '100%',
+                  height: '90vh',
+                }}>
 
-          }
+                  <div style={{
+                    backgroundColor: '#d5d5d5',
+                    width: '40%',
+                    margin: 10,
+                    marginBottom: 35,
+                  }}>
+                    <Recorder setFileCurrent={setFileCurrent} handleAddPost={handleAddPost}></Recorder>
+                  </div>
+                  <div style={{
+                    backgroundColor: '#d5d5d5',
+                    width: '60%',
+                    marginRight: 10,
+                    marginTop: 10,
+                    marginBottom: 10,
+
+                  }}>
+                    <h2 style={{ textAlign: 'center' }}>Uploads Activity:  </h2>
+                    <UploadVideo fileCurrent={fileCurrent} setSelectedFiles={setSelectedFiles_Activity} filesSelected={filesSelected_Activity} post={post} handleAddPost={handleAddPost} newContent={newContent} setNewContent={setNewContent}></UploadVideo>
+                  </div>
+                </div>
+              </> : tab == 2 ? <>
+                <CalendarView></CalendarView>
+              </> : tab == 3 ? <>
+                <RegisterForm authAdmin={authAdmin}></RegisterForm>
+              </> : <>
+                <div style={{
+                  margin: '1%',
+                  width: '88%',
+                  backgroundColor: 'gray',
+                  position: 'absolute',
+                  height: '96%',
+                  borderRadius: '10px',
+                  display: 'flex'
+                }}>
+                  <SubjectCreate formData={formData} setFormData={setFormData}></SubjectCreate>
+                  <SubjectView formData={formData} setFormData={setFormData} ></SubjectView>
+                </div>
+              </>
+
+
+            }<a href="/logout" style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              textDecoration: 'none',
+              padding: 5,
+              fontWeight: 'bold',
+              "&hover": {
+                color: 'white'
+              }
+            }}>
+              {"< Logout"}
+            </a>
+          </div>
         </div>
       </div>
     </div>

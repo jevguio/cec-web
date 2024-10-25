@@ -10,19 +10,41 @@ use App\Models\LoginBacklog;
 class LoginController extends Controller
 { 
     public function loginTeacherView(){
-         return view("Teacher.Login");
+        if(Auth::check()){
+            return  redirect()->route("dashboard");
+
+        }else{
+            return  view("Teacher.Login");
+        }
     }
     public function registerTeacherView(){
-         return view("Teacher.Register");
+        
+        if(Auth::check()){
+
+            return  view("Teacher.Register");
+        }else{
+            return  redirect()->route("faculty.login");
+        }
+    }
+    public function logout(Request $request)
+    {
+        Auth::logout();
+    
+        // Invalidate the session and regenerate the CSRF token to prevent re-use
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+    
+        // Redirect the user to the login page (or any other page you choose)
+        return redirect()->route("faculty.login");
     }
     public function dashboard(){
 
-        if(Auth::user()){
+        if(Auth::check()){
 
-            return view("Teacher.Dashboard");
+            return  view("Teacher.Dashboard");
         }else{
             
-         return view("Teacher.Login");
+         return  redirect()->route("faculty.login");
         }
     }
     
@@ -36,7 +58,10 @@ class LoginController extends Controller
         // Attempt authentication using school_id and password
         if (Auth::attempt(['school_id' => $credentials['school_id'], 'password' => $credentials['password']])) {
             $request->session()->regenerate(); // Prevent session fixation attacks
-
+            LoginBacklog::create([
+                'school_id' =>  $request->school_id, 
+                'login_time' =>  now(), 
+            ]);
             // Redirect to dashboard with user data
             return redirect()->route('dashboard')->with('user', Auth::user());
         }

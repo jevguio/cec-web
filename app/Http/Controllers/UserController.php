@@ -36,6 +36,10 @@ class UserController extends Controller
             ],
         ]);
     }
+    public function GetTeacher(){
+        $teacher=User::where("type","teacher")->get();
+        return response()->json(['teacher' =>$teacher]);
+    }
     public function registerForWeb(Request $request)
     {
         // Validate the request
@@ -59,6 +63,6 @@ class UserController extends Controller
         ]);
 
         // Log in the user or redirect to a page
-        return redirect()->route('register')->with('success', 'Registration successful!.');
+        return redirect()->route('faculty.register')->with('success', 'Registration successful!.');
     }
 }

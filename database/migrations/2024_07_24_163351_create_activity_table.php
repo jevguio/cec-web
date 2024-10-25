@@ -11,21 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('url_links', function (Blueprint $table) {
+        Schema::create('activity', function (Blueprint $table) {
             $table->id(); 
             $table->string('url');
-            $table->string('title');
-            $table->string('subject');
-            $table->string('roomASsign');
-            $table->string('teacher');
+            $table->string('title');  
+            $table->date('dateDue')->nullable();  
             $table->string('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('subject_id')->constrained('subjects')->onDelete('cascade');
             $table->timestamps();
         });
         
-        Schema::create('videos_backlogs', function (Blueprint $table) {
+        Schema::create('activity_backlogs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');  
-            $table->foreignId('url_links_id')->constrained('url_links')->onDelete('cascade');  
+            $table->foreignId('activity_id')->constrained('activity')->onDelete('cascade');  
             $table->string('duration_time');
             $table->timestamps();
         });
@@ -36,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('url_links');
+        Schema::dropIfExists('activity');
+        Schema::dropIfExists('activity_backlogs');
     }
 };

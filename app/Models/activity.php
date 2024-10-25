@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class url_link extends Model
+class activity extends Model
 {
     use HasFactory;
-    protected $fillable = ['url','user_id', 'title', 'subject','roomASsign','teacher']; 
+    protected $table="activity";
+    protected $fillable = ['url','user_id', 'title', 'subject_id','roomASsign','teacher']; 
     public function subject()
     {
         return $this->belongsTo(Subject::class);

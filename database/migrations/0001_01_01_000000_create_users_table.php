@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('school_id')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->enum('type', ['teacher', 'student']);
+            $table->enum('type', ['teacher', 'student','admin']);
             $table->rememberToken();
             $table->timestamps();
         });

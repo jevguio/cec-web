@@ -13,8 +13,17 @@ return new class extends Migration
     {
         Schema::create('announcements', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users'); // Foreign key to announcements
+            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('subjects_id')->constrained('subjects'); // Foreign key to announcements
             $table->text('content'); // For the announcement content
+            $table->timestamps();
+        });
+        
+        Schema::create('announcements_backlogs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');  
+            $table->foreignId('announcements_id')->constrained('announcements')->onDelete('cascade');  
+            $table->string('duration_time');
             $table->timestamps();
         });
         
@@ -27,5 +36,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('announcements');
+        Schema::dropIfExists('announcements_backlogs');
     }
 };

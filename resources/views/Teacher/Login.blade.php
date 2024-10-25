@@ -2,6 +2,8 @@
 <html lang="en-us">
   <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>ART - Teacher Login</title> 
   </head>
@@ -163,8 +165,7 @@ span.psw {
 
     <div class="container" style="background-color:#f1f1f1">
       <button type="button" onclick="window.location.href = '/'" class="cancelbtn">Cancel</button>
-      <button type="button" onclick="window.location.href = '/faculty/register'" class="registerbtn">Register</button>
-      <span class="psw">Forgot <a href="#">password?</a></span>
+       <span class="psw">Forgot <a href="#">password?</a></span>
     </div>
   </form>
 </div>
