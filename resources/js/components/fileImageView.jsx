@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from 'react';
 
 function FileImageView({ file, removeFile, index, url }) { 
-    let isImage='';
-    let isVideo='';
-const imageExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-const videoExtensions = ['mp4', 'mov', 'webm'];
-
-// Function to extract file extension
-const getFileExtension = (url) => {
-    // Check if url is a string
-    if (typeof url === 'string') {
-        const parts = url.split('.');
-        return parts.length > 1 ? parts.pop().toLowerCase() : '';
-    }
-    console.warn('Invalid URL:', url);
-    return ''; // Return an empty string if not a valid URL
-};
-const fileExtension = url?getFileExtension(url):''; 
- isImage =  url?imageExtensions.includes(fileExtension):'';
- isVideo = url?videoExtensions.includes(fileExtension):file.type.startsWith('video/'); 
+    const getFileExtension_url = (url) => {
+        return url.split('.').pop().toLowerCase();
+    };
+    const getFileExtension_file = (filet) => {
+        return filet.name.split('.').pop().toLowerCase();
+    };
+    const fileExtension = file ? getFileExtension_file(file) : getFileExtension_url(url);
+    const isVideo = ['mp4', 'mov', 'webm'].includes(fileExtension);
+    const isImage = ['png', 'jpeg', 'jpg'].includes(fileExtension);
+    const isPdf = fileExtension === 'pdf';
     return (
         <>
             <div style={{
@@ -32,7 +24,7 @@ const fileExtension = url?getFileExtension(url):'';
             }}>
                 {isVideo ? (
                     <video
-                        src={url? 'storage/'+url : URL.createObjectURL(file)}
+                        src={url ? 'storage/' + url : URL.createObjectURL(file)}
                         disablePictureInPicture
 
                         muted
@@ -45,10 +37,10 @@ const fileExtension = url?getFileExtension(url):'';
                             objectFit: 'cover',
                         }}
                     />
-                ) : (
+                ) : isImage ? (
                     <img
-                        src={url? 'storage/'+url : URL.createObjectURL(file)}
-                        alt={url?'storage/'+url:file.name}
+                        src={url ? 'storage/' + url : URL.createObjectURL(file)}
+                        alt={url ? 'storage/' + url : file}
                         style={{
                             width: '100%',
                             height: 'auto',
@@ -58,14 +50,34 @@ const fileExtension = url?getFileExtension(url):'';
                             objectFit: 'cover',
                         }}
                     />
-                )}
+                )
+                    : <button
+                        style={{
+                            width: '100%',
+                            height: 'auto',
+                            maxWidth: '50px',
+                            maxHeight: '50px',
+                            aspectRatio: '1/1',
+                            objectFit: 'cover',
+                        }}>
+                        {file}
+                    </button>
+                }
                 <div>
 
-                    <label style={{ padding: 10, fontSize: '12px' }}>{url?isVideo?'video '+(index+1):'image '+(index+1):file.name}</label><br></br>
+                    <label style={{ padding: 10, fontSize: '12px' }}>
+                        {
+                            url ?
+                                isVideo ? 'video ' + (index + 1)
+                                    :
+                                    isImage ? 'image ' + (index + 1)
+                                        :
+                                        'File ' + (index + 1) + '.' + fileExtension
+                                :file.name
+                        }
+                    </label><br></br>
 
                     <button type='button' style={{
-                        position: 'absolute',
-                        right: 35,
                         height: '20px', fontSize: '10px',
                         backgroundColor: 'red',
                         color: 'white',

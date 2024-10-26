@@ -37,9 +37,9 @@ export const Main = () => {
     teacher_id: '',
   });
   useEffect(() => {
-    handleSubmit();
+    getAuth();
   }, [])
-  const handleSubmit = async () => {
+  const getAuth = async () => {
 
     try {
       const response = await fetch('/get/auth', {
@@ -182,7 +182,7 @@ export const Main = () => {
           </div>
           <div style={{
             maxHeight: '95vh',
-            width: '100%',
+            width: '90%',
           }}>
             {tab == 0 ? <>
               <div style={{
@@ -215,14 +215,13 @@ export const Main = () => {
                   </div>
                   <div style={{
                     backgroundColor: '#d5d5d5',
-                    width: '60%',
-                    marginRight: 10,
+                    width: '58%',
                     marginTop: 10,
                     marginBottom: 10,
 
                   }}>
                     <h2 style={{ textAlign: 'center' }}>Uploads Activity:  </h2>
-                    <UploadVideo fileCurrent={fileCurrent} setSelectedFiles={setSelectedFiles_Activity} filesSelected={filesSelected_Activity} post={post} handleAddPost={handleAddPost} newContent={newContent} setNewContent={setNewContent}></UploadVideo>
+                    <UploadVideo setSelectedFiles={setSelectedFiles_Activity} filesSelected={filesSelected_Activity} post={post} handleAddPost={handleAddPost} newContent={newContent} setNewContent={setNewContent}></UploadVideo>
                   </div>
                 </div>
               </> : tab == 2 ? <>

@@ -15,33 +15,66 @@ class ActivityController extends Controller
         $request->validate([
             'files.*' => 'required|file', // Validate each file
             'title' => 'required|string|max:255',
-            'subject_id' => 'required', // Ensure the subject exists
+            'subject_id' => 'required', // Ensure the subject exists 
         ]);
 
-        if ($request->hasFile('files')) {
+
+        $activity = new activity();
+        // Initialize an array to hold paths 
+        // Initialize an array to hold paths 
+
+
+        if( $request->has('activityID')){
+            $activity = activity::find($request->activityID);
+        }
+        if (!$activity) {
+            // If still no announcement found (neither newly created nor fetched), return an error
+            $activity = new activity(); // For creating a new announcement instead of update
+            
+        }
+
+        $filePaths = []; // Array to hold file paths
+        if ($request->has('fileUrl')) {
+            if ($request->fileUrl!="[]") {
+                \Log::info('fileUrl: has');
+                $fileUrls = json_decode($request->input('fileUrl'), true);  
+                $filePaths = array_merge($filePaths, $fileUrls);
+            }
+        }
+    
+        if ($request->hasFile('files') ) {
             $files = $request->file('files');
-            $filePaths = []; // Array to hold file paths
 
             // Iterate through the uploaded files
             foreach ($files as $file) {
                 $filePath = $file->store('uploads', 'public'); // Store file and get the path
                 $filePaths[] = $filePath; // Add path to array 
             }
+            $userId='';
+            if (Auth::check()) {
 
+                $userId = Auth::user()->id;
+            } else {
+                // Handle the case where the user is not authenticated
+                return redirect()->route('faculty.login')->with('error', 'You must be logged in.');
+            }
+            \Log::info('userId:');
             // Create the record in the database
-            activity::create([
-                'url' => json_encode($filePaths), // Store file paths as a JSON string
-                'title' => $request->title,
-                'subject_id' => $request->subject_id,  
-                'user_id' => Auth::user()->id, // Get authenticated user's ID
-            ]);
-            
-            return response()->json(['msg' => 'Video Uploaded Successfully']);
+           
         } 
 
-        return response()->json(['msg' => 'Video upload Failed!'], 400); // Return error response if no files
-    }
+        $activity->title = $request->title;
+        $activity->subject_id = $request->subject_id;
 
+        $activity->dateDue = $request->dateDue;  
+        
+        $activity->url=json_encode($filePaths); 
+        $activity->user_id=Auth::user()->id; 
+        $activity->save();
+        
+        return response()->json(['msg' => 'Activity Uploaded Successfully']);
+    }
+     
     public function getLinksUrlAll()
     {
         // Fetch the uploads based on user id and filters
@@ -70,6 +103,16 @@ class ActivityController extends Controller
        
 
         return response()->json(["uploads"=>$uploads]);
+    }
+    public function getActivity($id)
+    {
+        // Fetch the uploads based on user id and filters
+        $uploads = activity::where("subject_id",$id)->get(); 
+
+        // Transform the data to match Unity's expected format
+       
+
+        return response()->json($uploads);
     }
 
 }

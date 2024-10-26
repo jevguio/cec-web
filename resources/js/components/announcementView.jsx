@@ -156,7 +156,8 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
           multiple
           ref={fileInput}
           hidden
-          accept="image/png,image/jpg,video/mp4"
+          accept="video/mp4,video/avi, application/pdf, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, image/png,image/jpg, image/jpeg"
+
         />
 
         <button

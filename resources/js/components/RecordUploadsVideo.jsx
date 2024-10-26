@@ -21,6 +21,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
   const [Activity, setActivity] = useState([]);
   const [fileUrl, setFileUrl] = useState([]);
   const [ActivityID, setActivityID] = useState('');
+  const [dueDate, setDueDate] = useState('');
   const [selectSubject, setSelectSubject] = useState({
     subject_id: '',
   });
@@ -70,9 +71,11 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
       prevFiles.filter((file, index) => index !== indexToRemove)
     );
   };
-  const removeFileUrl = (idToRemove) => {
+  const removeFileUrl = (indexToRemove) => {
+
+    console.log(fileUrl);
     setFileUrl((prevFiles) => {
-      const updatedFiles = prevFiles.filter(file => file.id !== idToRemove); // Use file.id if idToRemove is the file ID
+      const updatedFiles = prevFiles.filter((file, index) => index !== indexToRemove)// Use file.id if idToRemove is the file ID
       console.log('updatedFiles', updatedFiles); // Log the updated state here
       return updatedFiles; // Return the updated state
     });
@@ -87,13 +90,16 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
     try {
 
 
-      const response = await axios.post('/api/uploadvideos', formData, {
+      const response = await axios.post('/api/uploadActivity', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
       console.log('Upload Successful:', response.data);
 
+      setDueDate('');
+      setSelectSubject({
+        subject_id: ''})
       setNewContent('');
       setSelectedFiles([]); setFileUrl([]);
     } catch (error) {
@@ -127,7 +133,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
 
         const result = await response.json();
 
-        if (response.ok) { 
+        if (response.ok) {
           setActivity(result.uploads);
         } else {
           console.error(result.message || 'An error occurred.');
@@ -139,26 +145,34 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
     }
     getActivity();
   }, [ActivityID, filesSelected]);
-  const onClickeditHandle = (id, content, files) => {
+  const onClickeditHandle = (id, content, subject_id, dueDate, files) => { 
     setActivityID(id);
     setNewContent(content);
     setFileUrl(files);
+    const dateConverted=new Date(dueDate).toISOString().slice(0,16);
+    setDueDate(dueDate?dateConverted:'');
+    setSelectSubject({ subject_id: subject_id });
     setSelectedFiles([]);
   }
   return (
     <div style={{
       padding: 5,
-      width: '98%',
-      display: 'flex', margin: 5
+      width: '100%',
+      display: 'flex',
+      margin: 5,
+      alignContent: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexWrap: 'nowrap'
     }}>
       <div style={{
         height: '70vh',
         overflow: 'auto',
-        width: '99%',
+        width: '50%',
         padding: 10,
         borderRadius: 10,
-        backgroundColor: 'gray'
-        , margin: 5
+        backgroundColor: 'gray',
+        margin: 5
       }}>
         {Activity && Activity.map((item, index) => (
           <div key={index} style={{
@@ -168,64 +182,55 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
             backgroundColor: 'lightgray'
           }}>
             <p>Content: {item.title}</p>
-            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', width: '100%', maxWidth: '600px', margin: 'auto' }}>
               {JSON.parse(item.url).map((file, index) => {
                 // Function to get the file extension
-                const getFileExtension = (filePath) => {
-                  return filePath.split('.').pop().toLowerCase();
-                };
-
+                const getFileExtension = (filePath) => filePath.split('.').pop().toLowerCase();
                 const fileExtension = getFileExtension(file);
                 const isVideo = ['mp4', 'mov', 'webm'].includes(fileExtension);
+                const isImage = ['png', 'jpeg', 'jpg'].includes(fileExtension);
+                const isPdf = fileExtension === 'pdf';
 
                 return (
-                  <div key={index}
+                  <div
+                    key={index}
+                    style={{
+                      flex: '0 0 50%', // Ensure two items per row
+                      boxSizing: 'border-box',
+                      padding: '5px',
+                      textAlign: 'center',
+                      backgroundColor: 'gray',
+                      margin: 5,
+                    }}
                   >
-
                     {isVideo ? (
-                      <video style={{ maxHeight: '60px' }}
-                        onClick={() => {
-                          console.log('open', file); // Make sure 'file' is the correct path/filename
-                          window.open(`${window.location.origin}/storage/${file}`, '_blank'); // Open the file in a new tab
-                        }}>
+                      <video
+                        style={{ maxHeight: '60px', cursor: 'pointer' }}
+                        onClick={() => window.open(`${window.location.origin}/storage/${file}`, '_blank')}
+                      >
                         <source src={'/storage/' + file} type={`video/${fileExtension}`} />
                         Your browser does not support the video tag.
                       </video>
-                    ) :
-                      (
-                        file.split('.')[1] === "png" || file.split('.')[1] === "jpeg" || file.split('.')[1] === "jpg" ? 
-                        
-                        <img src={"/storage/"+file}
-                        onClick={() => {
-                          const fileUrl = `${window.location.origin}/storage/${file}`;
-                          console.log(fileUrl)
-                          window.open(fileUrl, '_blank');
-                        }}
-                        style={{
-                          maxHeight:'80px'
-                        }}
-                        ></img>:
-
-                          <button
-                            onClick={() => {
-                              const fileUrl = `${window.location.origin}/storage/${file}`;
-                              console.log(fileUrl)
-                              window.open(fileUrl, '_blank');
-                            }}
-                          >
-                            {file.split('.')[1] === "pdf" || file.split('.')[1] === "png" || file.split('.')[1] === "jpeg" || file.split('.')[1] === "jpg" ? "Open " : "Download "}
-                            {file.split('.')[1]}
-                          </button>
-                      )
-
-
-                    }
+                    ) : isImage ? (
+                      <img
+                        src={`/storage/${file}`}
+                        onClick={() => window.open(`${window.location.origin}/storage/${file}`, '_blank')}
+                        style={{ maxHeight: '80px', cursor: 'pointer' }}
+                        alt=""
+                      />
+                    ) : (
+                      <button
+                        onClick={() => window.open(`${window.location.origin}/storage/${file}`, '_blank')}
+                      >
+                        {isPdf ? "Open PDF" : "Download File"}
+                      </button>
+                    )}
                   </div>
                 );
               })}
-
             </div>
-            <button onClick={() => onClickeditHandle(item.id, item.content, item.files)}>Edit</button>
+
+            <button onClick={() => onClickeditHandle(item.id, item.title, item.subject_id, item.dateDue, JSON.parse(item.url))}>Edit</button>
           </div>
         ))}
       </div>
@@ -233,7 +238,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
       <form style={{
         margin: 10,
         padding: 10,
-        width: '98%'
+        width: '50%'
       }} onSubmit={handleSubmit} method="post" action="/api/upload">
         <select
           name="subject_id"
@@ -253,7 +258,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
           name="title"
           className="upload_text"
           style={{
-            width: '92%',
+            width: '94%',
             border: 'none',
             padding: 10,
             marginTop: 10
@@ -265,6 +270,22 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
         />
         <br />
 
+        <input
+          type="datetime-local"
+          className="upload_text"
+          id="dateDue"
+          name="dateDue"
+          value={dueDate}
+          onChange={(e)=>setDueDate(e.target.value)}
+          style={{
+            padding: 5,
+            width: '97%',
+            border: 'none',
+            marginTop: 10,
+            fontSize: 'large'
+          }}
+        ></input><br></br>
+        <span style={{ padding: '5px 5px 0 10px', display: 'block' }}>Empty means no due date</span>
         <div
           style={{
             border: hoverAttach ? 'dashed 2px white' : 'dashed 2px gray',
@@ -294,14 +315,14 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
               <div key={index} style={{ marginRight: '10px' }}>
                 <FileImageView
                   index={index}
-                  removeFile={() => removeFileUrl(file.id)} // Pass the remove function
-                  url={file.file_path ? file.file_path : ''}
+                  removeFile={() => removeFileUrl(index)} // Pass the remove function
+                  url={file ? file : ''}
                 />
               </div>
             ))}
           </div>
         </div>
-        <input type="hidden" name="announcementID" value={ActivityID} />
+        <input type="hidden" name="activityID" value={ActivityID} />
         <input type="hidden" name="fileUrl" value={JSON.stringify(fileUrl)} />
         <input
           type="file"
@@ -330,7 +351,7 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
               marginTop: 10,
               borderRadius: 5
             }}
-            onClick={() => onClickeditHandle('', '', [])}
+            onClick={() => onClickeditHandle('', '','','', [])}
           >
             Cancel
           </button>}

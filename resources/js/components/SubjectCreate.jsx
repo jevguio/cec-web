@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 function SubjectCreate({ formData, setFormData }) {
+    
+    const [room, setRoom] = useState([205,206]);
     const [teachers, setTeachers] = useState([
         {
             id: '',
@@ -127,17 +129,20 @@ function SubjectCreate({ formData, setFormData }) {
                     ></input>
 
                     <label htmlFor="Room" style={{ display: 'block' }}>Room</label>
-                    <input
-                        type="text"
+                    
+                    <select
                         className="registerInput"
                         id="Room"
                         name="room"
-                        placeholder="Ex. MH201"
                         value={formData.room}
                         onChange={handleInputChange}
                         required
-                    ></input>
-
+                    >
+                        <option value="" disabled> Select Room</option>
+                        {room.map((val) => (
+                            <option key={val} value={val}>{val}</option>
+                        ))}
+                    </select> 
                     <label htmlFor="Teacher" style={{ display: 'block' }}>Teacher</label>
                     <select
                         name="teacher_id"

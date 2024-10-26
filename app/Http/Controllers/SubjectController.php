@@ -63,5 +63,23 @@ class SubjectController extends Controller
     
         return response()->json($subjects);
     }
+    public function getSubjectByRoom($room)
+    {
+        $subjects = Subject::with('teacher')
+            ->where('room', $room) // Fetch subjects where teacher_id matches the authenticated user's ID
+            ->get();
+    
+        return response()->json($subjects);
+    }
+    public function getSubjectAndRoom($room, $teacherId)
+    {
+        $subjects = Subject::with('teacher')
+        ->where('room', $room)
+        ->whereHas('teacher', function ($query) use ($teacherId) {
+            $query->where('id', $teacherId);
+        })->get();
+    
+        return response()->json($subjects);
+    }
     
 }

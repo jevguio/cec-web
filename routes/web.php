@@ -43,9 +43,10 @@ Route::middleware(CheckDevice::class)->group(function () {
     Route::get('/view/{filename}', [FileUploadController::class, 'viewFileDocs'])->name('document.view');
 
     Route::post('/get/teacher', [UserController::class, 'GetTeacher'])->name('register');
+    Route::post('/get/calendar/activity', [ActivityController::class, 'getLinksUrl'])->name('get.calendar.activity');
 
     Route::post('/api/getvideos', [ActivityController::class, 'getLinksUrl']);//unity
-    Route::post('/api/uploadvideos', [ActivityController::class, 'stores']);//unity
+    Route::post('/api/uploadActivity', [ActivityController::class, 'stores']);//unity
     Route::get('/get/auth', function () {
         if(Auth::check()){
             $auth=Auth::user();
@@ -77,6 +78,13 @@ Route::middleware(CheckDevice::class)->group(function () {
     Route::delete('/subjects/{id}', [SubjectController::class, 'deleteSubject']); 
     Route::post('/subjects/create', [SubjectController::class, 'addSubject']);
     Route::get('/subjects/view/all', [SubjectController::class, 'index']);
+    Route::get('/subjects/view/{room}', [SubjectController::class, 'getSubjectByRoom']);
+
+
+    Route::get('/subjects/get/{id}', [ActivityController::class, 'getActivity']);
+
+
+    Route::get('/subjects/view/{room}/{id}', [SubjectController::class, 'getSubjectAndRoom']);
     Route::get('/subjects/view', [SubjectController::class, 'getSubject']);
     Route::get('/', function () {
         return view('index');
