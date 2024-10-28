@@ -170,15 +170,16 @@ export const Main = () => {
             <button onClick={(e) => OnclickTab(2)} className={tab == 2 ? 'leftButton p1 active' : "leftButton p1"}>
               <img src={calendarRemovebgPreview1} ></img>
             </button>
-            <button onClick={(e) => OnclickTab(3)} className={tab == 3 ? 'leftButton p1 active' : "leftButton p1"}>
-              <img style={{
-                padding: '10px',
-              }} src={register} ></img>
-            </button>
+
             {authAdmin === "admin" &&
-              <button onClick={(e) => OnclickTab(4)} className={tab == 4 ? 'leftButton p1 active' : "leftButton p1"}>
-                <img src={subject} ></img>
+              <button onClick={(e) => OnclickTab(3)} className={tab == 3 ? 'leftButton p1 active' : "leftButton p1"}>
+                <img style={{
+                  padding: '10px',
+                }} src={register} ></img>
               </button>}
+            <button onClick={(e) => OnclickTab(4)} className={tab == 4 ? 'leftButton p1 active' : "leftButton p1"}>
+              <img src={subject} ></img>
+            </button>
           </div>
           <div style={{
             maxHeight: '95vh',
