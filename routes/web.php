@@ -11,7 +11,7 @@ use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\AnnouncementController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\CheckDevice;
-
+use App\Http\Controllers\BacklogController;
 use Illuminate\Http\Request;
 
 Route::get('/isMobile', function (Request $request) {
@@ -38,6 +38,8 @@ Route::get('/isMobile', function (Request $request) {
 })->name('isMobile');
 Route::middleware(CheckDevice::class)->group(function () {
     
+Route::get('/login-backlogs', [BacklogController::class, 'getLoginBacklogs']);
+Route::get('/room-backlogs', [BacklogController::class, 'getRoomBacklogs']);
     Route::post('/api/upload', [FileUploadController::class, 'upload']);
     Route::post('/api/getupload', [FileUploadController::class, 'viewFiles']);
     Route::get('/view/{filename}', [FileUploadController::class, 'viewFileDocs'])->name('document.view');

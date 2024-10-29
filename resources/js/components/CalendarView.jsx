@@ -59,8 +59,7 @@ const CustomCalendar = () => {
       const result = await response.json();
 
       if (response.ok) {
-        setActivity(result.uploads);
-        console.log(result.uploads);
+        setActivity(result.uploads); 
       } else {
         console.error(result.message || 'An error occurred.');
       }

@@ -15,7 +15,7 @@ import CalendarView from './components/CalendarView';
 import SubjectCreate from './components/SubjectCreate';
 import SubjectView from './components/SubjectView';
 import RegisterForm from './RegisterForm';
-
+import Backlogs from "./components/backlogsview";
 export const Main = () => {
   const [authAdmin, setAuthAdmin] = useState(false);
   const [filesSelected_Activity, setSelectedFiles_Activity] = useState([]);
@@ -180,6 +180,9 @@ export const Main = () => {
             <button onClick={(e) => OnclickTab(4)} className={tab == 4 ? 'leftButton p1 active' : "leftButton p1"}>
               <img src={subject} ></img>
             </button>
+            <button onClick={(e) => OnclickTab(5)} className={tab == 5 ? 'leftButton p1 active' : "leftButton p1"}>
+              <img src={subject} ></img>
+            </button>
           </div>
           <div style={{
             maxHeight: '95vh',
@@ -229,7 +232,7 @@ export const Main = () => {
                 <CalendarView></CalendarView>
               </> : tab == 3 ? <>
                 <RegisterForm authAdmin={authAdmin}></RegisterForm>
-              </> : <>
+              </> :tab==4? <>
                 <div style={{
                   margin: '1%',
                   width: '88%',
@@ -243,9 +246,14 @@ export const Main = () => {
                   <SubjectView formData={formData} setFormData={setFormData} ></SubjectView>
                 </div>
               </>
+              :
+              <>
+              <Backlogs></Backlogs>
+              </>
 
 
-            }<a href="/logout" style={{
+            }
+            <a href="/logout" style={{
               position: 'absolute',
               top: 0,
               right: 0,
