@@ -60,7 +60,7 @@ function FileImageView({ file, removeFile, index, url }) {
                             aspectRatio: '1/1',
                             objectFit: 'cover',
                         }}>
-                        {file}
+                        {file?file.name:file}
                     </button>
                 }
                 <div>

@@ -44,10 +44,10 @@ class FileUploadController extends Controller
         if (!$announcement) {
             // If still no announcement found (neither newly created nor fetched), return an error
             $announcement = new Announcement(); // For creating a new announcement instead of update
+            
         }
         if ($request->has('fileUrl')) {
             $fileUrls = json_decode($request->input('fileUrl'), true);
-            \Log::info('File URLs:', $fileUrls);
             if($announcement->files()->exists()){
                 $announcement->files()->delete(); // Optional: Remove old files if you want to replace them 
 
@@ -68,8 +68,7 @@ class FileUploadController extends Controller
         $announcement->user_id = $user_id; // Store the user_id
         
         $announcement->save();
-        if ($request->hasFile('files')) {
-            $allowedFileExtensions = ['jpeg', 'jpg', 'png', 'mp4'];
+        if ($request->hasFile('files')) { 
             $files = $request->file('files');
             
             // Create the announcement
@@ -77,19 +76,15 @@ class FileUploadController extends Controller
             $filePaths = []; // Array to hold file paths
             foreach ($files as $file) {
                 $filename = $file->getClientOriginalName();
-                $extension = $file->getClientOriginalExtension();
-                $check = in_array($extension, $allowedFileExtensions);
+                $extension = $file->getClientOriginalExtension(); 
                 
-                if ($check) {
-                    $filePath =  $file->store('uploads', 'public'); // Store file and get the path
-                    $filePaths[] = $filePath; // Add path to array
+                $filePath =  $file->store('uploads', 'public'); // Store file and get the path
+                $filePaths[] = $filePath; // Add path to array
 
-                    // Create a new file entry in the database
-                    ImagesUpload::create(['announcement_id' => $announcement->id, 'file_path' => $filePath]);
-                }
+                // Create a new file entry in the database
+                ImagesUpload::create(['announcement_id' => $announcement->id, 'file_path' => $filePath]); 
             } 
-        }
-
+        } 
         // Now you can save the announcement and file paths to your database
         // Assuming you have an Announcement model
         return response()->json(['message' => 'File uploaded successfully!', 'announcement' => $announcement], 201);

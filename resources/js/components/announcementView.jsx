@@ -226,8 +226,10 @@ const RecordUploads = ({ post, newContent, setNewContent, handleAddPost, filesSe
                     )}
 
                     {!isImage && !isVideo && (
-                      <p>Unsupported file type for display.</p>
+                      <button onClick={()=>window.open("/storage/"+file.file_path,"_blank")}>{fileExtension=="pdf"?"Open ":"Save "} {fileExtension}</button>
                     )}
+                    <br></br>
+                    <br></br>
                   </div>
                 );
               })}
