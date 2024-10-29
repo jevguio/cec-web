@@ -18,7 +18,9 @@ function Backlogs() {
     }, []);
 
     return (
-        <div>
+        <div style={{
+            width:'70%',margin:'auto',
+        }}>
             <h2>Login Backlogs</h2>
             <table>
                 <thead>
@@ -38,30 +40,7 @@ function Backlogs() {
                     ))}
                 </tbody>
             </table>
-
-            <h2>Room Backlogs</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>School ID</th>
-                        <th>Room</th>
-                        <th>Type</th>
-                        <th>Logs Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {roomBacklogs.map(log => (
-                        <tr key={log.id}>
-                            <td>{log.id}</td>
-                            <td>{log.school_id}</td>
-                            <td>{log.room}</td>
-                            <td>{log.type}</td>
-                            <td>{log.logs_time}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+ 
         </div>
     );
 }
