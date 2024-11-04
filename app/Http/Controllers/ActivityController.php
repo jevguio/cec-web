@@ -80,15 +80,32 @@ class ActivityController extends Controller
         // Fetch the uploads based on user id and filters
         $uploads = activity::all(); 
 
-        // Transform the data to match Unity's expected format
-       
-
-        return response()->json(["uploads"=>$uploads]);
+        $transformedData = $uploads->map(function ($upload) {
+            return [
+                'id' => $upload->id,
+                'url' => $upload->url,
+                'title' => $upload->title,
+                'dateDue' => $upload->dateDue,
+                'user_id' => $upload->user_id,
+                'subject_id' => $upload->subject_id,
+                'created_at' => $upload->created_at,
+                'updated_at' => $upload->updated_at,
+            ];
+        });
+    
+        return response()->json(['uploads' => $transformedData]);
     }   
     public function getLinksUrl()
     {
         // Fetch the uploads based on user id and filters
-        $uploads = activity::where('user_id', Auth::user()->id)->get(); 
+        $uploads;
+        if(Auth::check()){
+            $uploads = activity::where('user_id', Auth::user()->id)->get(); 
+
+        }else{
+            \Log::info('not Login');
+
+        }
         // Transform the data to match Unity's expected format
        
 

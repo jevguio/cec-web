@@ -45,7 +45,7 @@ Route::get('/room-backlogs', [BacklogController::class, 'getRoomBacklogs']);
     Route::get('/view/{filename}', [FileUploadController::class, 'viewFileDocs'])->name('document.view');
 
     Route::post('/get/teacher', [UserController::class, 'GetTeacher'])->name('register');
-    Route::post('/get/calendar/activity', [ActivityController::class, 'getLinksUrl'])->name('get.calendar.activity');
+    Route::get('/get/calendar/activity', [ActivityController::class, 'getLinksUrl'])->name('get.calendar.activity');
 
     Route::post('/api/getvideos', [ActivityController::class, 'getLinksUrl']);//unity
     Route::post('/api/uploadActivity', [ActivityController::class, 'stores']);//unity
